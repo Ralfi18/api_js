@@ -5,6 +5,7 @@ window.onload = function(){
       btn = document.getElementById("btn"),
       wrapp = document.getElementById("wrapp"),
       payload = {
+        // todo make auth in backend
         username: 'rali',
         password: 'rali123',
         page: 1
@@ -14,7 +15,7 @@ window.onload = function(){
       data = new FormData();
 
     // initial load
-
+    load_users(url, wrapp, payload, limit, paginationTag, data, pg);
     // paginate
     var pg = function pagination(value){
 
@@ -25,7 +26,7 @@ window.onload = function(){
         load_users(url, wrapp, payload, limit, paginationTag, data, pg);
       }
     }
-    load_users(url, wrapp, payload, limit, paginationTag, data, pg);
+
   /*
   |---------------------------------------------------
   | Load users function
