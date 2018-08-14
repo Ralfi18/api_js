@@ -1,6 +1,6 @@
 
 window.onload = function(){
-
+  
   var url = 'http://api.loc/users',
       btn = document.getElementById("btn"),
       wrapp = document.getElementById("wrapp"),
@@ -9,29 +9,31 @@ window.onload = function(){
         password: 'rali123',
         page: 1
       },
-      limit = 10,
+      limit = 15,
       paginationTag = document.getElementById("pagination")
       data = new FormData();
 
     // initial load
 
     // paginate
-    var pg = function pagination(value){
+    var pg = function pagination(value, self){
 
-      if(value) {
+      if(value, self) {
         paginationTag.innerHTML = '';
         wrapp.innerHTML = '';
         payload.page = parseInt(value);
-        load_users(url, wrapp, payload, limit, paginationTag, data, pg);
+
+        load_users(url, wrapp, payload, limit, paginationTag, data, pg, self);
       }
     }
-    load_users(url, wrapp, payload, limit, paginationTag, data, pg);
+    load_users(url, wrapp, payload, limit, paginationTag, data, pg, 1);
   /*
   |---------------------------------------------------
   | Load users function
   |---------------------------------------------------
   */
-  function load_users(url, wrapp, payload, limit, pagination, data, pg) {
+  function load_users(url, wrapp, payload, limit, pagination, data, pg, curentLink) {
+    payload.limit = limit;
     data.append( "credentials", JSON.stringify( payload ) );
 
     fetch(url, {
@@ -52,7 +54,7 @@ window.onload = function(){
           node.appendChild(textnode);
           wrapp.appendChild(node);
         });
-        var numLinks = Math.floor(users[0] / 10);
+        var numLinks = Math.ceil(users[0] / limit);
 
         for(var i = 1; i <= numLinks; i++) {
           var li = document.createElement('LI'),
@@ -60,9 +62,14 @@ window.onload = function(){
               number = document.createTextNode(i);
           a.appendChild(number);
           a.className += "pagination page-"  + i;
+          if ( curentLink === i ) {
+            a.style.color = 'red';
+          } else if (curentLink && curentLink.text == i) {
+            a.style.color = 'red';
+          }
           a.onclick = function(){
             // function appendet to a tag on click event
-            pg(this.text);
+            pg(this.text, this);
           }
           li.appendChild(a);
           pagination.appendChild(li);
